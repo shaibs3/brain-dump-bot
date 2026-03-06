@@ -16,7 +16,7 @@ A personal Telegram bot that captures voice notes and text messages throughout t
 - **AI Transcription** - Google Speech-to-Text converts voice to text
 - **Smart Categorization** - GPT-4o-mini auto-sorts into life categories
 - **Daily Summaries** - Automated summary at your preferred time
-- **Todoist Sync** - Optional integration to sync notes as tasks
+- **<img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/todoist.svg" width="16" height="16"> Todoist Integration** - Automatically sync notes as tasks to Todoist
 - **Multi-Language** - Configure any language supported by Google Speech-to-Text
 - **Custom Categories** - Define your own categories and emojis
 - **Auto Cleanup** - Notes older than 7 days are automatically deleted
@@ -164,9 +164,16 @@ Set `LANGUAGE_CODE` to any [supported language](https://cloud.google.com/speech-
 | `/status` | Show today's note count |
 | `/settime HH:MM` | Change daily summary time |
 
-## Todoist Integration (Optional)
+## <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/todoist.svg" width="24" height="24"> Todoist Integration
 
-Sync your notes to Todoist as tasks automatically.
+> **Turn your brain dumps into actionable tasks!** Every note you send automatically becomes a Todoist task, organized by category.
+
+### Why Todoist Integration?
+
+- **Never lose a thought** - Voice notes become tasks instantly
+- **Stay organized** - Tasks are auto-labeled by category
+- **Daily review** - Summary task helps you review the day
+- **Retry on failure** - Built-in retry logic ensures sync reliability
 
 ### Setup
 
@@ -181,14 +188,22 @@ Sync your notes to Todoist as tasks automatically.
    TODOIST_PROJECT_NAME=Brain Dump  # Optional, defaults to "Brain Dump"
    ```
 
-3. **Restart the bot**
+3. **Restart the bot** - That's it!
 
 ### What gets synced
 
 | Event | Todoist Task |
 |-------|--------------|
-| New voice/text note | Task with category emoji and label (e.g., `💼 Call client about project`) |
-| Daily summary | Task titled `📋 Daily Summary - March 6, 2026 (5 notes)` |
+| New voice/text note | `💼 Call client about project` (with category label) |
+| Daily summary | `📋 Daily Summary - March 6, 2026 (5 notes)` |
+
+### Features
+
+- **Auto-creates project** - "Brain Dump" project created if it doesn't exist
+- **Category labels** - Each task tagged with its category
+- **Full transcript** - Task description contains the complete note
+- **Retry logic** - 3 retries with exponential backoff on API failures
+- **Non-blocking** - Todoist errors don't affect bot functionality
 
 ## Deployment
 
