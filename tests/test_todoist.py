@@ -91,7 +91,8 @@ class TestGetOrCreateProject:
         mock_project = MagicMock()
         mock_project.name = "Brain Dump"
         mock_project.id = "existing123"
-        mock_api.get_projects.return_value = [mock_project]
+        # Paginated response: list of pages, each page is a list of projects
+        mock_api.get_projects.return_value = [[mock_project]]
         mock_get_client.return_value = mock_api
 
         result = _get_or_create_project(mock_api)
@@ -107,7 +108,7 @@ class TestGetOrCreateProject:
         from bot.todoist import _get_or_create_project
 
         mock_api = MagicMock()
-        mock_api.get_projects.return_value = []  # No existing projects
+        mock_api.get_projects.return_value = [[]]  # Empty page, no existing projects
         mock_new_project = MagicMock()
         mock_new_project.id = "new123"
         mock_api.add_project.return_value = mock_new_project

@@ -38,13 +38,13 @@ def _get_or_create_project(api: Any) -> str | None:
         return _project_id
 
     try:
-        # Check if project exists
-        projects = api.get_projects()
-        for project in projects:
-            if project.name == TODOIST_PROJECT_NAME:
-                _project_id = str(project.id)
-                logger.info(f"Found existing Todoist project: {TODOIST_PROJECT_NAME}")
-                return _project_id
+        # Check if project exists (paginated results)
+        for page in api.get_projects():
+            for project in page:
+                if project.name == TODOIST_PROJECT_NAME:
+                    _project_id = str(project.id)
+                    logger.info(f"Found existing Todoist project: {TODOIST_PROJECT_NAME}")
+                    return _project_id
 
         # Create project if not exists
         project = api.add_project(name=TODOIST_PROJECT_NAME)
@@ -65,12 +65,12 @@ def _get_or_create_label(api: Any, category: str) -> str | None:
         return _label_ids[category]
 
     try:
-        # Check if label exists
-        labels = api.get_labels()
-        for label in labels:
-            if label.name == category:
-                _label_ids[category] = str(label.id)
-                return str(label.id)
+        # Check if label exists (paginated results)
+        for page in api.get_labels():
+            for label in page:
+                if label.name == category:
+                    _label_ids[category] = str(label.id)
+                    return str(label.id)
 
         # Create label if not exists
         label = api.add_label(name=category)
