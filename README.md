@@ -1,106 +1,20 @@
 # Brain Dump Bot
 
-A Telegram bot that captures voice notes throughout the day, transcribes them using Google Speech-to-Text, categorizes them with AI, and sends daily summaries.
+[![CI](https://github.com/shaibs3/brain-dump-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/shaibs3/brain-dump-bot/actions/workflows/ci.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A personal Telegram bot that captures voice notes and text messages throughout the day, transcribes and categorizes them with AI, and sends you a daily summary.
 
 ## Features
 
-- **Voice Note Transcription** - Send voice messages, get instant transcription
-- **AI Categorization** - Automatic sorting into Career, Health, Fitness, Relationships, Finance, Learning, Projects
-- **Daily Summaries** - Automated summary at configurable time (default 9pm)
-- **On-Demand Summary** - Get your summary anytime with `/summary`
+- **Voice & Text Notes** - Send voice messages or text, both work seamlessly
+- **AI Transcription** - Google Speech-to-Text converts voice to text
+- **Smart Categorization** - GPT-4o-mini auto-sorts into life categories
+- **Daily Summaries** - Automated summary at your preferred time
+- **Todoist Sync** - Optional integration to sync notes as tasks
+- **Auto Cleanup** - Notes older than 7 days are automatically deleted
 - **Single User** - Secured to your Telegram account only
-
-## Prerequisites
-
-- Python 3.11+
-- ffmpeg (for audio processing)
-- Google Cloud account with Speech-to-Text API enabled
-- OpenAI API key
-- Telegram bot token (from @BotFather)
-
-## Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/shaibs3/brain-dump-bot.git
-   cd brain-dump-bot
-   ```
-
-2. **Create virtual environment**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Configure environment**
-   ```bash
-   cp .env.example .env
-   ```
-   Edit `.env` with your credentials (see Configuration below)
-
-## Configuration
-
-Create a `.env` file with the following variables:
-
-| Variable | Description |
-|----------|-------------|
-| `TELEGRAM_BOT_TOKEN` | Bot token from @BotFather |
-| `GOOGLE_APPLICATION_CREDENTIALS` | Path to Google Cloud service account JSON |
-| `OPENAI_API_KEY` | Your OpenAI API key |
-| `SUMMARY_TIME` | Daily summary time in HH:MM format (default: 21:00) |
-| `TIMEZONE` | Your timezone (default: Asia/Jerusalem) |
-| `ALLOWED_USER_ID` | Your Telegram user ID (get from @userinfobot) |
-
-### Getting API Keys
-
-1. **Telegram Bot Token**
-   - Message @BotFather on Telegram
-   - Send `/newbot` and follow the prompts
-   - Copy the token provided
-
-2. **Google Cloud Speech-to-Text**
-   - Go to [Google Cloud Console](https://console.cloud.google.com)
-   - Create a new project or select existing
-   - Enable the Speech-to-Text API
-   - Create a service account with Speech-to-Text permissions
-   - Download the JSON key file
-
-3. **OpenAI API Key**
-   - Go to [OpenAI Platform](https://platform.openai.com)
-   - Create an API key in Settings > API Keys
-
-4. **Your Telegram User ID**
-   - Message @userinfobot on Telegram
-   - It will reply with your user ID
-
-## Usage
-
-**Run the bot:**
-```bash
-python -m bot.main
-```
-
-**Available commands:**
-
-| Command | Description |
-|---------|-------------|
-| `/start` | Welcome message and usage info |
-| `/summary` | Get today's summary |
-| `/yesterday` | Get yesterday's summary |
-| `/status` | Show today's note count |
-| `/settime HH:MM` | Change daily summary time |
-
-**Voice notes:**
-Simply send a voice message to the bot. It will:
-1. Transcribe the audio
-2. Categorize it automatically
-3. Save it for the daily summary
-4. Confirm with category and summary
 
 ## Categories
 
@@ -114,75 +28,154 @@ Simply send a voice message to the bot. It will:
 | Learning | 📚 | Courses, books, skills |
 | Projects | 🔧 | Side projects, hobbies |
 
+## Quick Start
+
+### Prerequisites
+
+- Python 3.11+
+- [Telegram Bot Token](https://core.telegram.org/bots#creating-a-new-bot) (from @BotFather)
+- [Google Cloud Speech-to-Text API](https://cloud.google.com/speech-to-text) credentials
+- [OpenAI API Key](https://platform.openai.com/api-keys)
+- ffmpeg (`brew install ffmpeg` or `apt install ffmpeg`)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/shaibs3/brain-dump-bot.git
+cd brain-dump-bot
+
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your credentials
+```
+
+### Configuration
+
+Edit `.env` with your values:
+
+```bash
+# Required
+TELEGRAM_BOT_TOKEN=your_bot_token
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/google-credentials.json
+OPENAI_API_KEY=your_openai_key
+ALLOWED_USER_ID=your_telegram_user_id  # Get from @userinfobot
+
+# Optional
+SUMMARY_TIME=21:00      # Daily summary time (24h format)
+TIMEZONE=UTC            # Your timezone
+
+# Optional - Todoist Integration
+TODOIST_API_TOKEN=your_todoist_token
+TODOIST_PROJECT_NAME=Brain Dump
+```
+
+### Run
+
+```bash
+python -m bot.main
+```
+
+## Bot Commands
+
+| Command | Description |
+|---------|-------------|
+| `/start` | Welcome message and usage info |
+| `/summary` | Get today's summary |
+| `/yesterday` | Get yesterday's summary |
+| `/status` | Show today's note count |
+| `/settime HH:MM` | Change daily summary time |
+
 ## Deployment
 
-### Using systemd (Linux)
+### Using systemd (Linux/VPS)
 
-1. **Create service file**
-   ```bash
-   sudo nano /etc/systemd/system/brain-dump-bot.service
-   ```
+```bash
+sudo nano /etc/systemd/system/brain-dump-bot.service
+```
 
-2. **Add configuration**
-   ```ini
-   [Unit]
-   Description=Brain Dump Telegram Bot
-   After=network.target
+```ini
+[Unit]
+Description=Brain Dump Bot
+After=network.target
 
-   [Service]
-   User=your-user
-   WorkingDirectory=/path/to/brain-dump-bot
-   Environment="PATH=/path/to/brain-dump-bot/venv/bin"
-   ExecStart=/path/to/brain-dump-bot/venv/bin/python -m bot.main
-   Restart=always
-   RestartSec=10
+[Service]
+User=your-user
+WorkingDirectory=/path/to/brain-dump-bot
+Environment="PATH=/path/to/brain-dump-bot/.venv/bin"
+ExecStart=/path/to/brain-dump-bot/.venv/bin/python -m bot.main
+Restart=always
+RestartSec=10
 
-   [Install]
-   WantedBy=multi-user.target
-   ```
+[Install]
+WantedBy=multi-user.target
+```
 
-3. **Enable and start**
-   ```bash
-   sudo systemctl enable brain-dump-bot
-   sudo systemctl start brain-dump-bot
-   ```
+```bash
+sudo systemctl enable brain-dump-bot
+sudo systemctl start brain-dump-bot
+```
 
-4. **Check status**
-   ```bash
-   sudo systemctl status brain-dump-bot
-   ```
+### Auto-Deploy with GitHub Actions (Optional)
+
+To enable automatic deployment on push to main:
+
+1. Add repository variable: `DEPLOY_ENABLED` = `true`
+2. Add repository secrets:
+   - `VPS_HOST` - Your server IP
+   - `VPS_USERNAME` - SSH username
+   - `VPS_SSH_KEY` - Private SSH key
 
 ## Development
 
-**Install dev dependencies:**
 ```bash
+# Install dev dependencies
 pip install -r requirements-dev.txt
-```
 
-**Run tests:**
-```bash
+# Run tests
 pytest -v
-```
 
-**Run linting:**
-```bash
+# Linting
 ruff check .
 ruff format .
-```
 
-**Run type checking:**
-```bash
+# Type checking
 mypy .
 ```
 
 ## Cost Estimates
 
-| Service | Estimated Cost |
-|---------|----------------|
-| VPS (DigitalOcean/Linode) | ~$5-6/month |
-| Google Speech-to-Text | ~$0.50-1/month (5-15 notes/day) |
-| OpenAI API (gpt-4o-mini) | ~$0.50-1/month |
+| Service | Monthly Cost |
+|---------|--------------|
+| VPS (Oracle Cloud Free) | $0 |
+| Google Speech-to-Text | ~$0.50-1 (5-15 notes/day) |
+| OpenAI API (gpt-4o-mini) | ~$0.50-1 |
+| **Total** | **~$1-2/month** |
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Run tests (`pytest -v`)
+4. Commit your changes (`git commit -m 'Add amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
 
 ## License
 
-MIT
+MIT License - see [LICENSE](LICENSE) for details.
+
+## Acknowledgments
+
+- [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot)
+- [Google Cloud Speech-to-Text](https://cloud.google.com/speech-to-text)
+- [OpenAI](https://openai.com)
