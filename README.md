@@ -19,6 +19,18 @@
   <img src="docs/demo.png" alt="Bot Demo" width="400">
 </p>
 
+## Table of Contents
+
+- [Features](#features)
+- [Default Categories](#default-categories)
+- [Quick Start](#quick-start)
+- [Setup Guides](#setup-guides)
+- [Configuration](#configuration)
+- [Bot Commands](#bot-commands)
+- [Todoist Integration](#todoist-integration-optional)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+
 ## Features
 
 - 🎤 **Voice & Text Notes** - Send voice messages or text, both work seamlessly
@@ -198,7 +210,6 @@ Sync your notes to Todoist as tasks automatically.
 | New voice/text note | Task with category emoji and label (e.g., `💼 Call client about project`) |
 | Daily summary | Task titled `📋 Daily Summary - March 6, 2026 (5 notes)` |
 
-
 ## Troubleshooting
 
 ### "Unauthorized" error
@@ -211,9 +222,9 @@ Sync your notes to Todoist as tasks automatically.
 - Ensure Speech-to-Text API is enabled in Google Cloud
 
 ### Bot not responding
-- Check the bot is running: `sudo systemctl status brain-dump-bot`
-- View logs: `journalctl -u brain-dump-bot -f`
+- Make sure the bot process is running
 - Verify `TELEGRAM_BOT_TOKEN` is correct
+- Check the terminal for error messages
 
 ### Wrong language transcription
 - Set `LANGUAGE_CODE` in `.env` to match your language
