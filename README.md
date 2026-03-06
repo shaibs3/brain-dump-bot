@@ -1,10 +1,23 @@
-# Brain Dump Bot
+<p align="center">
+  <img src="docs/banner.png" alt="Brain Dump Bot" width="100%">
+</p>
 
-[![CI](https://github.com/shaibs3/brain-dump-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/shaibs3/brain-dump-bot/actions/workflows/ci.yml)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<p align="center">
+  <img src="docs/icon.png" alt="Brain Dump Bot Icon" width="120">
+</p>
 
-A personal Telegram bot that captures voice notes and text messages throughout the day, transcribes and categorizes them with AI, and sends you a daily summary.
+<h1 align="center">Brain Dump Bot</h1>
+
+<p align="center">
+  <a href="https://github.com/shaibs3/brain-dump-bot/actions/workflows/ci.yml"><img src="https://github.com/shaibs3/brain-dump-bot/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.11+-blue.svg" alt="Python 3.11+"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+</p>
+
+<p align="center">
+  A personal Telegram bot that captures voice notes and text messages throughout the day,<br>
+  transcribes and categorizes them with AI, and sends you a daily summary.
+</p>
 
 <p align="center">
   <img src="docs/demo.png" alt="Bot Demo" width="400">
