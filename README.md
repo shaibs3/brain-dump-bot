@@ -36,7 +36,6 @@ A personal Telegram bot that captures voice notes and text messages throughout t
 - [Telegram Bot Token](https://core.telegram.org/bots#creating-a-new-bot) (from @BotFather)
 - [Google Cloud Speech-to-Text API](https://cloud.google.com/speech-to-text) credentials
 - [OpenAI API Key](https://platform.openai.com/api-keys)
-- ffmpeg (`brew install ffmpeg` or `apt install ffmpeg`)
 
 ### Installation
 
