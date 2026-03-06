@@ -43,10 +43,26 @@ class TestSyncNoteToTodoist:
         assert call_kwargs["project_id"] == "project123"
         assert "Career" in call_kwargs["labels"]
 
+    @patch("bot.todoist.INITIAL_DELAY", 0.01)  # Speed up tests
     @patch("bot.todoist._project_id", "project123")
     @patch("bot.todoist.TODOIST_API_TOKEN", "test_token")
     @patch("bot.todoist._get_client")
-    def test_handles_api_error(self, mock_get_client: MagicMock) -> None:
+    def test_retries_on_failure_then_succeeds(self, mock_get_client: MagicMock) -> None:
+        mock_api = MagicMock()
+        # Fail twice, succeed on third attempt
+        mock_api.add_task.side_effect = [Exception("Fail 1"), Exception("Fail 2"), None]
+        mock_get_client.return_value = mock_api
+
+        result = sync_note_to_todoist("Career", "Test summary", "Full transcript")
+
+        assert result is True
+        assert mock_api.add_task.call_count == 3
+
+    @patch("bot.todoist.INITIAL_DELAY", 0.01)  # Speed up tests
+    @patch("bot.todoist._project_id", "project123")
+    @patch("bot.todoist.TODOIST_API_TOKEN", "test_token")
+    @patch("bot.todoist._get_client")
+    def test_fails_after_max_retries(self, mock_get_client: MagicMock) -> None:
         mock_api = MagicMock()
         mock_api.add_task.side_effect = Exception("API error")
         mock_get_client.return_value = mock_api
@@ -54,6 +70,7 @@ class TestSyncNoteToTodoist:
         result = sync_note_to_todoist("Career", "Test summary", "Full transcript")
 
         assert result is False
+        assert mock_api.add_task.call_count == 3  # MAX_RETRIES
 
 
 class TestSyncDailySummaryToTodoist:
