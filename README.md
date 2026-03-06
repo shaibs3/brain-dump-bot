@@ -25,7 +25,7 @@
 - 🗣️ **AI Transcription** - Google Speech-to-Text converts voice to text
 - 🧠 **Smart Categorization** - GPT-4o-mini auto-sorts into life categories
 - 📋 **Daily Summaries** - Automated summary at your preferred time
-- <img src="https://todoist.com/favicon.ico" width="16"> **Todoist Sync** - Optional integration to sync notes as tasks
+- ✅ **Todoist Sync** - Optional integration to sync notes as tasks
 - 🌍 **Multi-Language** - Configure any language supported by Google Speech-to-Text
 - 🏷️ **Custom Categories** - Define your own categories and emojis
 - 🧹 **Auto Cleanup** - Notes older than 7 days are automatically deleted
