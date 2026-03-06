@@ -128,3 +128,56 @@ class TestDatabase:
     def test_mark_empty_list_does_nothing(self, db: Database) -> None:
         # Should not raise
         db.mark_notes_as_summarized([])
+
+    def test_delete_old_notes(self, db: Database) -> None:
+        # Create a recent note (today)
+        db.save_note(
+            telegram_message_id=1,
+            audio_file_id="file_1",
+            transcript="Recent note",
+            category="Career",
+            summary="Recent note",
+        )
+
+        # Manually insert an old note (10 days ago)
+        with db._get_connection() as conn:
+            conn.execute(
+                """
+                INSERT INTO notes (telegram_message_id, audio_file_id, transcript,
+                                   category, summary, created_at)
+                VALUES (?, ?, ?, ?, ?, datetime('now', '-10 days'))
+                """,
+                (2, "file_2", "Old note", "Health", "Old note"),
+            )
+
+        # Verify we have 2 notes
+        assert db.get_today_notes_count() == 1  # Only today's note
+        with db._get_connection() as conn:
+            total = conn.execute("SELECT COUNT(*) as c FROM notes").fetchone()["c"]
+            assert total == 2
+
+        # Delete notes older than 7 days
+        deleted = db.delete_old_notes(7)
+        assert deleted == 1
+
+        # Verify old note is gone
+        with db._get_connection() as conn:
+            total = conn.execute("SELECT COUNT(*) as c FROM notes").fetchone()["c"]
+            assert total == 1
+
+    def test_delete_old_notes_no_old_notes(self, db: Database) -> None:
+        # Create only a recent note
+        db.save_note(
+            telegram_message_id=1,
+            audio_file_id="file_1",
+            transcript="Recent note",
+            category="Career",
+            summary="Recent note",
+        )
+
+        # Delete should return 0
+        deleted = db.delete_old_notes(7)
+        assert deleted == 0
+
+        # Note should still exist
+        assert db.get_today_notes_count() == 1

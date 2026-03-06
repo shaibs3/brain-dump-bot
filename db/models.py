@@ -180,3 +180,15 @@ class Database:
                 """,
                 (key, value),
             )
+
+    def delete_old_notes(self, days: int = 7) -> int:
+        """Delete notes older than specified days. Returns count of deleted notes."""
+        with self._get_connection() as conn:
+            cursor = conn.execute(
+                """
+                DELETE FROM notes
+                WHERE created_at < datetime('now', ? || ' days')
+                """,
+                (f"-{days}",),
+            )
+            return cursor.rowcount
