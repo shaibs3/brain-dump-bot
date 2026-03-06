@@ -1,6 +1,9 @@
-# Environment
+# Environment & Credentials
 .env
 *.env.local
+*-key.json
+*-credentials.json
+service-account*.json
 
 # Python
 *.pyc
