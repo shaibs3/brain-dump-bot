@@ -150,14 +150,38 @@ ruff format .
 mypy .
 ```
 
-## Cost Estimates
+## Todoist Integration (Optional)
 
-| Service | Monthly Cost |
-|---------|--------------|
-| VPS (Oracle Cloud Free) | $0 |
-| Google Speech-to-Text | ~$0.50-1 (5-15 notes/day) |
-| OpenAI API (gpt-4o-mini) | ~$0.50-1 |
-| **Total** | **~$1-2/month** |
+Sync your notes to Todoist as tasks automatically.
+
+### Setup
+
+1. **Get your API token:**
+   - Go to [Todoist Developer Settings](https://todoist.com/app/settings/integrations/developer)
+   - Scroll down to "API token"
+   - Copy your token
+
+2. **Add to your `.env` file:**
+   ```bash
+   TODOIST_API_TOKEN=your_api_token_here
+   TODOIST_PROJECT_NAME=Brain Dump  # Optional, defaults to "Brain Dump"
+   ```
+
+3. **Restart the bot**
+
+### What gets synced
+
+| Event | Todoist Task |
+|-------|--------------|
+| New voice/text note | Task with category emoji and label (e.g., `💼 Call client about project`) |
+| Daily summary | Task titled `📋 Daily Summary - March 6, 2026 (5 notes)` |
+
+### Features
+
+- **Auto-creates project** - "Brain Dump" project is created if it doesn't exist
+- **Category labels** - Each note gets a label matching its category
+- **Retry logic** - Failed syncs retry 3 times with exponential backoff
+- **Non-blocking** - Todoist failures don't affect bot functionality
 
 ## Contributing
 
