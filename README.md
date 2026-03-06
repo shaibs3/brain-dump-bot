@@ -34,6 +34,7 @@ A personal Telegram bot that captures voice notes and text messages throughout t
 | Projects | 🔧 | Side projects, hobbies |
 | Shopping | 🛒 | Groceries, items to buy |
 | Home | 🏠 | Chores, maintenance, repairs |
+| Books | 📖 | Books and articles to read |
 
 You can customize these in your `.env` file (see [Configuration](#configuration)).
 

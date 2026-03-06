@@ -21,7 +21,7 @@ TODOIST_PROJECT_NAME = os.getenv("TODOIST_PROJECT_NAME", "Brain Dump")
 # Categories configuration
 # Format: "Category1:emoji1,Category2:emoji2,..."
 # Example: "Career:💼,Health:🏥,Fitness:💪"
-DEFAULT_CATEGORIES = "Career:💼,Health:🏥,Fitness:💪,Relationships:👥,Finance:💰,Learning:📚,Projects:🔧,Shopping:🛒,Home:🏠"
+DEFAULT_CATEGORIES = "Career:💼,Health:🏥,Fitness:💪,Relationships:👥,Finance:💰,Learning:📚,Projects:🔧,Shopping:🛒,Home:🏠,Books:📖"
 _categories_str = os.getenv("CATEGORIES", DEFAULT_CATEGORIES)
 
 # Parse categories from string
