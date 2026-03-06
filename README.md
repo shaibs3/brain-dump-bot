@@ -5,6 +5,11 @@
 <h1 align="center">Brain Dump Bot</h1>
 
 <p align="center">
+  <a href="https://github.com/shaibs3/brain-dump-bot/stargazers"><img src="https://img.shields.io/github/stars/shaibs3/brain-dump-bot?style=social" alt="Stars"></a>
+  <a href="https://github.com/shaibs3/brain-dump-bot/network/members"><img src="https://img.shields.io/github/forks/shaibs3/brain-dump-bot?style=social" alt="Forks"></a>
+</p>
+
+<p align="center">
   <a href="https://github.com/shaibs3/brain-dump-bot/actions/workflows/ci.yml"><img src="https://github.com/shaibs3/brain-dump-bot/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.11+-blue.svg" alt="Python 3.11+"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
@@ -22,6 +27,7 @@
 ## Table of Contents
 
 - [Features](#features)
+- [Why Use This?](#why-use-this)
 - [Default Categories](#default-categories)
 - [Quick Start](#quick-start)
 - [Setup Guides](#setup-guides)
@@ -42,6 +48,20 @@
 - 🏷️ **Custom Categories** - Define your own categories and emojis
 - 🧹 **Auto Cleanup** - Notes older than 7 days are automatically deleted
 - 🔒 **Single User** - Secured to your Telegram account only
+
+## Why Use This?
+
+Ever had a brilliant idea while driving, walking, or falling asleep? By the time you can write it down, it's gone.
+
+**Brain Dump Bot solves this:**
+
+- 💭 **Capture thoughts instantly** - Just talk to Telegram, no app switching
+- 🚗 **Works hands-free** - Voice notes while driving, exercising, or cooking
+- 🧘 **Reduces mental load** - Get thoughts out of your head and into a system
+- 📊 **Stay organized effortlessly** - AI categorizes everything automatically
+- 🔄 **Integrates with your workflow** - Sync to Todoist for action items
+
+Stop losing ideas. Start brain dumping.
 
 ## Default Categories
 
