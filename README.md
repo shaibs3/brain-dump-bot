@@ -2,10 +2,6 @@
   <img src="docs/banner.png" alt="Brain Dump Bot" width="100%">
 </p>
 
-<p align="center">
-  <img src="docs/icon.png" alt="Brain Dump Bot Icon" width="120">
-</p>
-
 <h1 align="center">Brain Dump Bot</h1>
 
 <p align="center">
