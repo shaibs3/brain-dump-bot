@@ -3,7 +3,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from bot.scheduler import send_daily_summary, setup_scheduler, shutdown_scheduler
+from bot.scheduler import (
+    cleanup_old_notes,
+    send_daily_summary,
+    setup_scheduler,
+    shutdown_scheduler,
+)
 from db.models import Note
 
 
@@ -73,6 +78,26 @@ class TestSendDailySummary:
         mock_db.get_notes_for_summary.assert_not_called()
 
 
+class TestCleanupOldNotes:
+    @pytest.mark.asyncio
+    @patch("bot.scheduler.db")
+    async def test_cleanup_deletes_old_notes(self, mock_db: MagicMock) -> None:
+        mock_db.delete_old_notes.return_value = 5
+
+        await cleanup_old_notes()
+
+        mock_db.delete_old_notes.assert_called_once_with(7)
+
+    @pytest.mark.asyncio
+    @patch("bot.scheduler.db")
+    async def test_cleanup_handles_no_old_notes(self, mock_db: MagicMock) -> None:
+        mock_db.delete_old_notes.return_value = 0
+
+        await cleanup_old_notes()
+
+        mock_db.delete_old_notes.assert_called_once_with(7)
+
+
 class TestSetupScheduler:
     @patch("bot.scheduler.AsyncIOScheduler")
     @patch("bot.scheduler.db")
@@ -88,7 +113,8 @@ class TestSetupScheduler:
         setup_scheduler(mock_app)
 
         mock_scheduler_class.assert_called_once()
-        mock_scheduler.add_job.assert_called_once()
+        # Should add 2 jobs: daily_summary and cleanup_old_notes
+        assert mock_scheduler.add_job.call_count == 2
         mock_scheduler.start.assert_called_once()
 
     @patch("bot.scheduler.AsyncIOScheduler")
@@ -104,9 +130,10 @@ class TestSetupScheduler:
 
         setup_scheduler(mock_app)
 
-        # Check that the trigger was created with correct time
-        add_job_call = mock_scheduler.add_job.call_args
-        trigger = add_job_call[1]["trigger"]
+        # Check that the summary trigger was created with correct time (first call)
+        add_job_calls = mock_scheduler.add_job.call_args_list
+        summary_call = add_job_calls[0]  # First call is daily_summary
+        trigger = summary_call[1]["trigger"]
         assert trigger.fields[5].expressions[0].first == 22  # hour
         assert trigger.fields[6].expressions[0].first == 30  # minute
 

@@ -1,3 +1,4 @@
+import logging
 from datetime import date
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -8,8 +9,19 @@ from bot.summary import generate_summary
 from config import ALLOWED_USER_ID, SUMMARY_TIME, TIMEZONE
 from db.models import Database
 
+logger = logging.getLogger(__name__)
 db = Database()
 scheduler: AsyncIOScheduler | None = None
+
+# Cleanup notes older than this many days
+CLEANUP_AFTER_DAYS = 7
+
+
+async def cleanup_old_notes() -> None:
+    """Delete notes older than CLEANUP_AFTER_DAYS."""
+    deleted = db.delete_old_notes(CLEANUP_AFTER_DAYS)
+    if deleted > 0:
+        logger.info(f"Cleaned up {deleted} notes older than {CLEANUP_AFTER_DAYS} days")
 
 
 async def send_daily_summary(app: Application) -> None:
@@ -50,6 +62,14 @@ def setup_scheduler(app: Application) -> None:
         trigger=CronTrigger(hour=int(hour), minute=int(minute)),
         args=[app],
         id="daily_summary",
+        replace_existing=True,
+    )
+
+    # Run cleanup daily at 3 AM
+    scheduler.add_job(
+        cleanup_old_notes,
+        trigger=CronTrigger(hour=3, minute=0),
+        id="cleanup_old_notes",
         replace_existing=True,
     )
 
