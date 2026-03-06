@@ -224,23 +224,6 @@ Sync your notes to Todoist as tasks automatically.
 - No spaces around colons or commas
 - Restart the bot after changing
 
-## Development
-
-```bash
-# Install dev dependencies
-pip install -r requirements-dev.txt
-
-# Run tests
-pytest -v
-
-# Linting
-ruff check .
-ruff format .
-
-# Type checking
-mypy .
-```
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
