@@ -10,6 +10,7 @@ from telegram.ext import ContextTypes
 
 from bot.categorize import categorize_note
 from bot.summary import generate_summary
+from bot.todoist import sync_note_to_todoist
 from bot.transcribe import transcribe_audio
 from config import ALLOWED_USER_ID, CATEGORY_EMOJIS
 from db.models import Database
@@ -154,6 +155,9 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                 summary=summary,
             )
 
+            # Sync to Todoist (if configured)
+            sync_note_to_todoist(category, summary, transcript)
+
             # Confirm
             emoji = CATEGORY_EMOJIS.get(category, "📌")
             await processing_msg.edit_text(f"✅ Saved to {emoji} {category}:\n{summary}")
@@ -191,6 +195,9 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             category=category,
             summary=summary,
         )
+
+        # Sync to Todoist (if configured)
+        sync_note_to_todoist(category, summary, text)
 
         # Confirm
         emoji = CATEGORY_EMOJIS.get(category, "📌")

@@ -6,6 +6,7 @@ from apscheduler.triggers.cron import CronTrigger
 from telegram.ext import Application
 
 from bot.summary import generate_summary
+from bot.todoist import sync_daily_summary_to_todoist
 from config import ALLOWED_USER_ID, SUMMARY_TIME, TIMEZONE
 from db.models import Database
 
@@ -45,6 +46,9 @@ async def send_daily_summary(app: Application) -> None:
 
     # Save summary to history
     db.save_daily_summary(summary_text, len(notes))
+
+    # Sync to Todoist (if configured)
+    sync_daily_summary_to_todoist(summary_text, len(notes))
 
 
 def setup_scheduler(app: Application) -> None:
