@@ -29,9 +29,11 @@ A personal Telegram bot that captures voice notes and text messages throughout t
 | Health | 🏥 | Doctor appointments, medications |
 | Fitness | 💪 | Gym, workouts, exercise |
 | Relationships | 👥 | Family, friends, social plans |
-| Finance | 💰 | Bills, budgets, purchases |
+| Finance | 💰 | Bills, budgets, investments |
 | Learning | 📚 | Courses, books, skills |
 | Projects | 🔧 | Side projects, hobbies |
+| Shopping | 🛒 | Groceries, items to buy |
+| Home | 🏠 | Chores, maintenance, repairs |
 
 You can customize these in your `.env` file (see [Configuration](#configuration)).
 
