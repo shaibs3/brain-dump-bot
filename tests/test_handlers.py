@@ -1,9 +1,12 @@
+from collections.abc import Generator
 from datetime import date, datetime
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from bot.handlers import (
+    handle_text,
     handle_voice,
     settime_command,
     start_command,
@@ -13,14 +16,24 @@ from bot.handlers import (
 )
 from db.models import Note
 
+# Test user ID for authorization
+TEST_USER_ID = 12345
+
+
+@pytest.fixture(autouse=True)
+def mock_allowed_user_id() -> Generator[None, Any, None]:
+    """Patch ALLOWED_USER_ID for all tests."""
+    with patch("bot.handlers.ALLOWED_USER_ID", TEST_USER_ID):
+        yield
+
 
 @pytest.fixture
 def mock_update() -> MagicMock:
     """Create a mock Update object."""
     update = MagicMock()
     update.effective_user = MagicMock()
-    update.effective_user.id = 0  # Matches ALLOWED_USER_ID default
-    update.message = AsyncMock()
+    update.effective_user.id = TEST_USER_ID  # Matches patched ALLOWED_USER_ID
+    update.message = MagicMock()
     update.message.reply_text = AsyncMock()
     update.message.message_id = 123
     return update
@@ -253,3 +266,44 @@ class TestHandleVoice:
         final_message = processing_msg.edit_text.call_args[0][0]
         assert "❌" in final_message
         assert "transcribe" in final_message.lower()
+
+
+class TestHandleText:
+    @pytest.mark.asyncio
+    @patch("bot.handlers.categorize_note")
+    @patch("bot.handlers.db")
+    async def test_handle_text_success(
+        self,
+        mock_db: MagicMock,
+        mock_categorize: MagicMock,
+        mock_update: MagicMock,
+        mock_context: MagicMock,
+    ) -> None:
+        mock_update.message.text = "Remember to call mom tomorrow"
+        mock_categorize.return_value = {"category": "Relationships", "summary": "Call mom tomorrow"}
+
+        await handle_text(mock_update, mock_context)
+
+        mock_categorize.assert_called_once_with("Remember to call mom tomorrow")
+        mock_db.save_note.assert_called_once()
+        mock_update.message.reply_text.assert_called()
+        call_args = mock_update.message.reply_text.call_args[0][0]
+        assert "✅" in call_args
+        assert "Relationships" in call_args
+
+    @pytest.mark.asyncio
+    @patch("bot.handlers.categorize_note")
+    @patch("bot.handlers.db")
+    async def test_handle_text_skips_commands(
+        self,
+        mock_db: MagicMock,
+        mock_categorize: MagicMock,
+        mock_update: MagicMock,
+        mock_context: MagicMock,
+    ) -> None:
+        mock_update.message.text = "/summary"
+
+        await handle_text(mock_update, mock_context)
+
+        mock_categorize.assert_not_called()
+        mock_db.save_note.assert_not_called()

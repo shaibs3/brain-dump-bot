@@ -42,8 +42,8 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         return
     await update.message.reply_text(
         "🧠 Brain Dump Bot\n\n"
-        "Send me voice notes throughout the day. I'll transcribe, categorize, "
-        "and send you a daily summary.\n\n"
+        "Send me voice notes or text messages throughout the day. "
+        "I'll categorize and send you a daily summary.\n\n"
         "Commands:\n"
         "/summary - Get today's summary\n"
         "/yesterday - Get yesterday's summary\n"
@@ -163,3 +163,38 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
     except Exception as e:
         await processing_msg.edit_text(f"❌ Error: {e!s}")
+
+
+@authorized_only
+async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle incoming text messages."""
+    if update.message is None or update.message.text is None:
+        return
+
+    text = update.message.text
+
+    # Skip if it's a command
+    if text.startswith("/"):
+        return
+
+    try:
+        # Categorize directly (no transcription needed)
+        result = categorize_note(text)
+        category = result["category"]
+        summary = result["summary"]
+
+        # Save to database
+        db.save_note(
+            telegram_message_id=update.message.message_id,
+            audio_file_id="",  # No audio for text messages
+            transcript=text,
+            category=category,
+            summary=summary,
+        )
+
+        # Confirm
+        emoji = CATEGORY_EMOJIS.get(category, "📌")
+        await update.message.reply_text(f"✅ Saved to {emoji} {category}:\n{summary}")
+
+    except Exception as e:
+        await update.message.reply_text(f"❌ Error: {e!s}")
