@@ -1,8 +1,6 @@
 <p align="center">
-  <img src="docs/icon.png" alt="Brain Dump Bot" width="150">
+  <img src="docs/banner.png" alt="Brain Dump Bot - Your Digital Stream of Consciousness" width="100%">
 </p>
-
-<h1 align="center">Brain Dump Bot</h1>
 
 <p align="center">
   <a href="https://github.com/shaibs3/brain-dump-bot/actions/workflows/ci.yml"><img src="https://github.com/shaibs3/brain-dump-bot/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
