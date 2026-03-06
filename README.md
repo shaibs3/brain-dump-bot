@@ -2,10 +2,6 @@
   <img src="docs/banner.png" alt="Brain Dump Bot" width="100%">
 </p>
 
-<p align="center">
-  <img src="docs/icon.png" alt="Brain Dump Bot Icon" width="120">
-</p>
-
 <h1 align="center">Brain Dump Bot</h1>
 
 <p align="center">
@@ -25,15 +21,15 @@
 
 ## Features
 
-- **Voice & Text Notes** - Send voice messages or text, both work seamlessly
-- **AI Transcription** - Google Speech-to-Text converts voice to text
-- **Smart Categorization** - GPT-4o-mini auto-sorts into life categories
-- **Daily Summaries** - Automated summary at your preferred time
-- **Todoist Sync** - Optional integration to sync notes as tasks
-- **Multi-Language** - Configure any language supported by Google Speech-to-Text
-- **Custom Categories** - Define your own categories and emojis
-- **Auto Cleanup** - Notes older than 7 days are automatically deleted
-- **Single User** - Secured to your Telegram account only
+- 🎤 **Voice & Text Notes** - Send voice messages or text, both work seamlessly
+- 🗣️ **AI Transcription** - Google Speech-to-Text converts voice to text
+- 🧠 **Smart Categorization** - GPT-4o-mini auto-sorts into life categories
+- 📋 **Daily Summaries** - Automated summary at your preferred time
+- ✅ **Todoist Sync** - Optional integration to sync notes as tasks
+- 🌍 **Multi-Language** - Configure any language supported by Google Speech-to-Text
+- 🏷️ **Custom Categories** - Define your own categories and emojis
+- 🧹 **Auto Cleanup** - Notes older than 7 days are automatically deleted
+- 🔒 **Single User** - Secured to your Telegram account only
 
 ## Default Categories
 
