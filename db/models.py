@@ -123,13 +123,14 @@ class Database:
         if not note_ids:
             return
         with self._get_connection() as conn:
+            # Safe: placeholders are just "?" chars, values passed as parameters
             placeholders = ",".join("?" * len(note_ids))
             conn.execute(
                 f"""
                 UPDATE notes
                 SET included_in_summary_at = CURRENT_TIMESTAMP
                 WHERE id IN ({placeholders})
-                """,
+                """,  # nosec B608
                 note_ids,
             )
 

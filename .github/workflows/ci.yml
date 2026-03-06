@@ -43,7 +43,7 @@ jobs:
       - name: Install bandit
         run: pip install bandit
       - name: Run security scan
-        run: bandit -r . -x ./tests
+        run: bandit -r . -x ./tests,./.venv,./venv,./.git
 
   test:
     runs-on: ubuntu-latest
