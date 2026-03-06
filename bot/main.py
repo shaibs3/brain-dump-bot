@@ -21,13 +21,19 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+async def post_init(app: Application) -> None:
+    """Initialize scheduler after event loop is running."""
+    setup_scheduler(app)
+    logger.info("Scheduler started.")
+
+
 def main() -> None:
     """Start the bot."""
     if not TELEGRAM_BOT_TOKEN:
         raise ValueError("TELEGRAM_BOT_TOKEN not set in environment")
 
-    # Create application
-    app = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
+    # Create application with post_init hook
+    app = Application.builder().token(TELEGRAM_BOT_TOKEN).post_init(post_init).build()
 
     # Add command handlers
     app.add_handler(CommandHandler("start", start_command))
@@ -38,9 +44,6 @@ def main() -> None:
 
     # Add voice message handler
     app.add_handler(MessageHandler(filters.VOICE, handle_voice))
-
-    # Set up scheduler for daily summaries
-    setup_scheduler(app)
 
     # Run bot
     logger.info("Starting Brain Dump Bot...")
