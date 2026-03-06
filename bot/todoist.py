@@ -1,8 +1,11 @@
 """Todoist integration for syncing notes and summaries."""
 
 import logging
+import time
+from collections.abc import Callable
 from datetime import date
-from typing import TYPE_CHECKING, Any
+from functools import wraps
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from config import CATEGORY_EMOJIS, TODOIST_API_TOKEN, TODOIST_PROJECT_NAME
 
@@ -11,9 +14,43 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+# Retry configuration
+MAX_RETRIES = 3
+INITIAL_DELAY = 1.0  # seconds
+BACKOFF_MULTIPLIER = 2.0
+
 # Cache for project and label IDs
 _project_id: str | None = None
 _label_ids: dict[str, str] = {}
+
+T = TypeVar("T")
+
+
+def _retry_with_backoff(func: Callable[..., T]) -> Callable[..., T]:
+    """Decorator to retry a function with exponential backoff."""
+
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> T:
+        delay = INITIAL_DELAY
+        last_exception: Exception | None = None
+
+        for attempt in range(MAX_RETRIES):
+            try:
+                return func(*args, **kwargs)
+            except Exception as e:
+                last_exception = e
+                if attempt < MAX_RETRIES - 1:
+                    logger.warning(
+                        f"Todoist API call failed (attempt {attempt + 1}/{MAX_RETRIES}): {e}. "
+                        f"Retrying in {delay:.1f}s..."
+                    )
+                    time.sleep(delay)
+                    delay *= BACKOFF_MULTIPLIER
+
+        logger.error(f"Todoist API call failed after {MAX_RETRIES} attempts: {last_exception}")
+        raise last_exception  # type: ignore[misc]
+
+    return wrapper
 
 
 def is_todoist_enabled() -> bool:
@@ -103,27 +140,28 @@ def sync_note_to_todoist(category: str, summary: str, transcript: str) -> bool:
         return False
 
     try:
-        project_id = _get_or_create_project(api)
-        if not project_id:
-            return False
-
-        # Get emoji for category
-        emoji = CATEGORY_EMOJIS.get(category, "📌")
-
-        # Create task
-        api.add_task(
-            content=f"{emoji} {summary}",
-            description=transcript if transcript != summary else "",
-            project_id=project_id,
-            labels=[category],
-        )
-
+        _sync_note_with_retry(api, category, summary, transcript)
         logger.info(f"Synced note to Todoist: {category} - {summary[:30]}...")
         return True
-
     except Exception as e:
-        logger.error(f"Failed to sync note to Todoist: {e}")
+        logger.error(f"Failed to sync note to Todoist after retries: {e}")
         return False
+
+
+@_retry_with_backoff
+def _sync_note_with_retry(api: Any, category: str, summary: str, transcript: str) -> None:
+    """Internal function to sync note with retry logic."""
+    project_id = _get_or_create_project(api)
+    if not project_id:
+        raise RuntimeError("Failed to get/create project")
+
+    emoji = CATEGORY_EMOJIS.get(category, "📌")
+    api.add_task(
+        content=f"{emoji} {summary}",
+        description=transcript if transcript != summary else "",
+        project_id=project_id,
+        labels=[category],
+    )
 
 
 def sync_daily_summary_to_todoist(summary_text: str, notes_count: int) -> bool:
@@ -145,23 +183,25 @@ def sync_daily_summary_to_todoist(summary_text: str, notes_count: int) -> bool:
         return False
 
     try:
-        project_id = _get_or_create_project(api)
-        if not project_id:
-            return False
-
-        today = date.today().strftime("%B %d, %Y")
-
-        # Create summary task
-        api.add_task(
-            content=f"📋 Daily Summary - {today} ({notes_count} notes)",
-            description=summary_text,
-            project_id=project_id,
-            labels=["Daily Summary"],
-        )
-
+        _sync_summary_with_retry(api, summary_text, notes_count)
         logger.info(f"Synced daily summary to Todoist: {notes_count} notes")
         return True
-
     except Exception as e:
-        logger.error(f"Failed to sync daily summary to Todoist: {e}")
+        logger.error(f"Failed to sync daily summary to Todoist after retries: {e}")
         return False
+
+
+@_retry_with_backoff
+def _sync_summary_with_retry(api: Any, summary_text: str, notes_count: int) -> None:
+    """Internal function to sync summary with retry logic."""
+    project_id = _get_or_create_project(api)
+    if not project_id:
+        raise RuntimeError("Failed to get/create project")
+
+    today = date.today().strftime("%B %d, %Y")
+    api.add_task(
+        content=f"📋 Daily Summary - {today} ({notes_count} notes)",
+        description=summary_text,
+        project_id=project_id,
+        labels=["Daily Summary"],
+    )
