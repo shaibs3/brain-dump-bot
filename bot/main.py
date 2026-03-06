@@ -3,6 +3,7 @@ import logging
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
 from bot.handlers import (
+    handle_text,
     handle_voice,
     settime_command,
     start_command,
@@ -42,8 +43,9 @@ def main() -> None:
     app.add_handler(CommandHandler("status", status_command))
     app.add_handler(CommandHandler("settime", settime_command))
 
-    # Add voice message handler
+    # Add message handlers
     app.add_handler(MessageHandler(filters.VOICE, handle_voice))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
 
     # Run bot
     logger.info("Starting Brain Dump Bot...")
