@@ -2,6 +2,8 @@ from pathlib import Path
 
 from google.cloud import speech
 
+from config import LANGUAGE_CODE
+
 
 def transcribe_audio(audio_path: str) -> str:
     """Transcribe audio file using Google Speech-to-Text.
@@ -24,7 +26,7 @@ def transcribe_audio(audio_path: str) -> str:
     config = speech.RecognitionConfig(
         encoding=speech.RecognitionConfig.AudioEncoding.OGG_OPUS,
         sample_rate_hertz=48000,
-        language_code="en-US",
+        language_code=LANGUAGE_CODE,
         enable_automatic_punctuation=True,
     )
 
