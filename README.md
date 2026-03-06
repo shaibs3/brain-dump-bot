@@ -6,8 +6,9 @@
 
 A personal Telegram bot that captures voice notes and text messages throughout the day, transcribes and categorizes them with AI, and sends you a daily summary.
 
-<!-- Add your screenshot here -->
-<!-- ![Bot Demo](docs/demo.gif) -->
+<p align="center">
+  <img src="docs/demo.png" alt="Bot Demo" width="400">
+</p>
 
 ## Features
 
