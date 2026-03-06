@@ -199,46 +199,6 @@ Sync your notes to Todoist as tasks automatically.
 | New voice/text note | Task with category emoji and label (e.g., `💼 Call client about project`) |
 | Daily summary | Task titled `📋 Daily Summary - March 6, 2026 (5 notes)` |
 
-## Deployment
-
-### Using systemd (Linux/VPS)
-
-```bash
-sudo nano /etc/systemd/system/brain-dump-bot.service
-```
-
-```ini
-[Unit]
-Description=Brain Dump Bot
-After=network.target
-
-[Service]
-User=your-user
-WorkingDirectory=/path/to/brain-dump-bot
-Environment="PATH=/path/to/brain-dump-bot/.venv/bin"
-ExecStart=/path/to/brain-dump-bot/.venv/bin/python -m bot.main
-Restart=always
-RestartSec=10
-
-[Install]
-WantedBy=multi-user.target
-```
-
-```bash
-sudo systemctl enable brain-dump-bot
-sudo systemctl start brain-dump-bot
-```
-
-### Auto-Deploy with GitHub Actions (Optional)
-
-To enable automatic deployment on push to main:
-
-1. Add repository variable: `DEPLOY_ENABLED` = `true`
-2. Add repository secrets:
-   - `VPS_HOST` - Your server IP
-   - `VPS_USERNAME` - SSH username
-   - `VPS_SSH_KEY` - Private SSH key
-
 ## Troubleshooting
 
 ### "Unauthorized" error
