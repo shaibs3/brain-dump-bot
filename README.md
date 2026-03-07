@@ -41,7 +41,7 @@
 
 - 🎤 **Voice & Text Notes** - Send voice messages or text, both work seamlessly
 - 🗣️ **AI Transcription** - Google Speech-to-Text converts voice to text
-- 🧠 **Smart Categorization** - GPT-4o-mini auto-sorts into life categories
+- 🧠 **Smart Categorization** - AI auto-sorts into life categories (OpenAI or Gemini)
 - 📋 **Daily Summaries** - Automated summary at your preferred time
 - ✅ **Todoist Sync** - Optional integration to sync notes as tasks
 - 🌍 **Multi-Language** - Configure any language supported by Google Speech-to-Text
@@ -87,7 +87,9 @@ You can customize these in your `.env` file (see [Configuration](#configuration)
 - Python 3.11+
 - Telegram Bot Token ([setup guide](#1-create-telegram-bot))
 - Google Cloud Speech-to-Text API ([setup guide](#2-setup-google-cloud-speech-to-text))
-- OpenAI API Key ([setup guide](#3-get-openai-api-key))
+- LLM API Key - **one of**:
+  - OpenAI API Key ([setup guide](#3a-get-openai-api-key)) - paid
+  - Google Gemini API Key ([setup guide](#3b-get-gemini-api-key-free)) - free tier available
 
 ### Installation
 
@@ -138,11 +140,21 @@ cp .env.example .env
    - Save the file (e.g., `google-credentials.json`)
 6. Add path to `.env` as `GOOGLE_APPLICATION_CREDENTIALS`
 
-### 3. Get OpenAI API Key
+### 3a. Get OpenAI API Key
 
 1. Go to [OpenAI Platform](https://platform.openai.com/api-keys)
 2. Click "Create new secret key"
 3. Copy the key → add to `.env` as `OPENAI_API_KEY`
+4. Set `LLM_PROVIDER=openai` in `.env`
+
+### 3b. Get Gemini API Key (Free)
+
+1. Go to [Google AI Studio](https://aistudio.google.com/apikey)
+2. Click "Create API Key"
+3. Copy the key → add to `.env` as `GEMINI_API_KEY`
+4. Set `LLM_PROVIDER=gemini` in `.env`
+
+> **Note:** Gemini offers a generous free tier (~1,500 requests/day), making it ideal for personal use.
 
 ### 4. Get Your Telegram User ID
 
@@ -158,8 +170,13 @@ Edit `.env` with your values:
 # Required
 TELEGRAM_BOT_TOKEN=your_bot_token
 GOOGLE_APPLICATION_CREDENTIALS=/path/to/google-credentials.json
-OPENAI_API_KEY=your_openai_key
 ALLOWED_USER_ID=123456789
+
+# LLM Provider (choose one)
+LLM_PROVIDER=openai                   # "openai" or "gemini"
+OPENAI_API_KEY=your_openai_key        # Required if LLM_PROVIDER=openai
+GEMINI_API_KEY=your_gemini_key        # Required if LLM_PROVIDER=gemini
+LLM_MODEL=                            # Optional: override default model
 
 # Optional
 SUMMARY_TIME=21:00                    # Daily summary time (24h format)
@@ -173,6 +190,15 @@ CATEGORIES=Career:💼,Health:🏥,Fitness:💪,Family:👨‍👩‍👧,Money:
 TODOIST_API_TOKEN=your_todoist_token
 TODOIST_PROJECT_NAME=Brain Dump
 ```
+
+### LLM Provider Options
+
+| Provider | Default Model | Free Tier | Notes |
+|----------|---------------|-----------|-------|
+| `openai` | `gpt-4o-mini` | $5 trial credit | Best quality |
+| `gemini` | `gemini-2.0-flash` | ~1,500 req/day | Free for personal use |
+
+Override the default model by setting `LLM_MODEL` (e.g., `gpt-4o`, `gemini-1.5-pro`).
 ### Run
 
 ```bash
