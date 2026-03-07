@@ -6,7 +6,7 @@ from bot.llm.prompt import build_full_prompt, parse_response, validate_category
 class GeminiClient:
     """Google Gemini LLM client for categorization."""
 
-    DEFAULT_MODEL = "gemini-2.0-flash"
+    DEFAULT_MODEL = "gemini-3-flash-preview"
 
     def __init__(self, api_key: str, model: str | None = None):
         """Initialize Gemini client.

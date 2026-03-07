@@ -196,7 +196,7 @@ TODOIST_PROJECT_NAME=Brain Dump
 | Provider | Default Model | Free Tier | Notes |
 |----------|---------------|-----------|-------|
 | `openai` | `gpt-4o-mini` | $5 trial credit | Best quality |
-| `gemini` | `gemini-2.0-flash` | ~1,500 req/day | Free for personal use |
+| `gemini` | `gemini-3-flash-preview` | ~1,500 req/day | Free for personal use |
 
 Override the default model by setting `LLM_MODEL` (e.g., `gpt-4o`, `gemini-1.5-pro`).
 ### Run
