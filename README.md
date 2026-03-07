@@ -202,6 +202,7 @@ Override the default model by setting `LLM_MODEL` (e.g., `gpt-4o`, `gemini-1.5-p
 ### Run
 
 ```bash
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 python -m bot.main
 ```
 
