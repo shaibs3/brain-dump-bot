@@ -8,8 +8,14 @@ TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 GOOGLE_APPLICATION_CREDENTIALS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 
 # LLM Provider configuration
-LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openai")  # "openai" or "gemini"
+_VALID_LLM_PROVIDERS = ("openai", "gemini")
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openai")
 LLM_MODEL = os.getenv("LLM_MODEL")  # None = use provider default
+
+if LLM_PROVIDER not in _VALID_LLM_PROVIDERS:
+    raise ValueError(
+        f"Invalid LLM_PROVIDER: '{LLM_PROVIDER}'. Must be one of: {', '.join(_VALID_LLM_PROVIDERS)}"
+    )
 
 # Provider API keys
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")

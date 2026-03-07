@@ -195,3 +195,103 @@ class TestGetLLMClient:
             get_llm_client()
 
         reset_client()
+
+    def test_raises_on_missing_openai_key(self) -> None:
+        from bot.llm import get_llm_client, reset_client
+
+        reset_client()
+
+        with (
+            patch("config.LLM_PROVIDER", "openai"),
+            patch("config.OPENAI_API_KEY", None),
+            pytest.raises(ValueError, match="OPENAI_API_KEY is required"),
+        ):
+            get_llm_client()
+
+        reset_client()
+
+    def test_raises_on_missing_gemini_key(self) -> None:
+        from bot.llm import get_llm_client, reset_client
+
+        reset_client()
+
+        with (
+            patch("config.LLM_PROVIDER", "gemini"),
+            patch("config.GEMINI_API_KEY", None),
+            pytest.raises(ValueError, match="GEMINI_API_KEY is required"),
+        ):
+            get_llm_client()
+
+        reset_client()
+
+
+class TestOpenAIErrorHandling:
+    @patch("bot.llm.openai.OpenAI")
+    def test_handles_rate_limit_error(self, mock_openai_class: MagicMock) -> None:
+        from openai import RateLimitError
+
+        from bot.llm.openai import OpenAIClient
+
+        mock_client = MagicMock()
+        mock_client.chat.completions.create.side_effect = RateLimitError(
+            "Rate limit exceeded",
+            response=MagicMock(status_code=429),
+            body=None,
+        )
+        mock_openai_class.return_value = mock_client
+
+        client = OpenAIClient(api_key="test-key")
+        result = client.categorize("test note", ["Work", "Health"])
+
+        assert result["category"] == "Projects"
+        assert result["summary"] == "test note"
+
+    @patch("bot.llm.openai.OpenAI")
+    def test_handles_auth_error(self, mock_openai_class: MagicMock) -> None:
+        from openai import AuthenticationError
+
+        from bot.llm.openai import OpenAIClient
+
+        mock_client = MagicMock()
+        mock_client.chat.completions.create.side_effect = AuthenticationError(
+            "Invalid API key",
+            response=MagicMock(status_code=401),
+            body=None,
+        )
+        mock_openai_class.return_value = mock_client
+
+        client = OpenAIClient(api_key="bad-key")
+        result = client.categorize("test note", ["Work", "Health"])
+
+        assert result["category"] == "Projects"
+        assert result["summary"] == "test note"
+
+
+class TestGeminiErrorHandling:
+    @patch("bot.llm.gemini.genai")
+    def test_handles_rate_limit_error(self, mock_genai: MagicMock) -> None:
+        from bot.llm.gemini import GeminiClient
+
+        mock_client = MagicMock()
+        mock_client.models.generate_content.side_effect = Exception("429 RESOURCE_EXHAUSTED")
+        mock_genai.Client.return_value = mock_client
+
+        client = GeminiClient(api_key="test-key")
+        result = client.categorize("test note", ["Work", "Health"])
+
+        assert result["category"] == "Projects"
+        assert result["summary"] == "test note"
+
+    @patch("bot.llm.gemini.genai")
+    def test_handles_auth_error(self, mock_genai: MagicMock) -> None:
+        from bot.llm.gemini import GeminiClient
+
+        mock_client = MagicMock()
+        mock_client.models.generate_content.side_effect = Exception("401 Unauthorized")
+        mock_genai.Client.return_value = mock_client
+
+        client = GeminiClient(api_key="bad-key")
+        result = client.categorize("test note", ["Work", "Health"])
+
+        assert result["category"] == "Projects"
+        assert result["summary"] == "test note"
