@@ -1,6 +1,7 @@
 python-telegram-bot>=20.0
 google-cloud-speech>=2.0
 openai>=1.0
+google-genai>=1.0.0
 apscheduler>=3.10
 python-dotenv>=1.0
 todoist-api-python>=2.0
