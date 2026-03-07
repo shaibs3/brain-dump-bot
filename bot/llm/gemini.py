@@ -13,7 +13,7 @@ class GeminiClient:
 
         Args:
             api_key: Google Gemini API key
-            model: Model to use (defaults to gemini-2.0-flash)
+            model: Model to use (defaults to gemini-3-flash-preview)
         """
         self.client = genai.Client(api_key=api_key)
         self.model = model or self.DEFAULT_MODEL
