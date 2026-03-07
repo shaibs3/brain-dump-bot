@@ -87,9 +87,9 @@ You can customize these in your `.env` file (see [Configuration](#configuration)
 - Python 3.11+
 - Telegram Bot Token ([setup guide](#1-create-telegram-bot))
 - Google Cloud Speech-to-Text API ([setup guide](#2-setup-google-cloud-speech-to-text))
-- LLM API Key - **one of**:
-  - OpenAI API Key ([setup guide](#3a-get-openai-api-key)) - paid
-  - Google Gemini API Key ([setup guide](#3b-get-gemini-api-key-free)) - free tier available
+- LLM API Key - **choose one** ([setup guide](#3-get-llm-api-key-choose-one)):
+  - Gemini (recommended, free) OR
+  - OpenAI (paid)
 
 ### Installation
 
@@ -140,21 +140,29 @@ cp .env.example .env
    - Save the file (e.g., `google-credentials.json`)
 6. Add path to `.env` as `GOOGLE_APPLICATION_CREDENTIALS`
 
-### 3a. Get OpenAI API Key
+### 3. Get LLM API Key (Choose ONE)
 
-1. Go to [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Click "Create new secret key"
-3. Copy the key → add to `.env` as `OPENAI_API_KEY`
-4. Set `LLM_PROVIDER=openai` in `.env`
+> **You only need ONE of these.** Pick Gemini for free usage, or OpenAI if you prefer GPT models.
 
-### 3b. Get Gemini API Key (Free)
+<details>
+<summary><b>Option A: Gemini (Recommended - Free)</b></summary>
 
 1. Go to [Google AI Studio](https://aistudio.google.com/apikey)
 2. Click "Create API Key"
 3. Copy the key → add to `.env` as `GEMINI_API_KEY`
 4. Set `LLM_PROVIDER=gemini` in `.env`
 
-> **Note:** Gemini offers a generous free tier (~1,500 requests/day), making it ideal for personal use.
+</details>
+
+<details>
+<summary><b>Option B: OpenAI (Paid)</b></summary>
+
+1. Go to [OpenAI Platform](https://platform.openai.com/api-keys)
+2. Click "Create new secret key"
+3. Copy the key → add to `.env` as `OPENAI_API_KEY`
+4. Set `LLM_PROVIDER=openai` in `.env`
+
+</details>
 
 ### 4. Get Your Telegram User ID
 
